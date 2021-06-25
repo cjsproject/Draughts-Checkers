@@ -13,21 +13,33 @@ todo:
 
 BOARD_SIZE = 8
 
+def tile_num_to_index(tile_num):
+	evens = [0, 2, 4, 6]
+	odds = [1, 3, 5, 7]
+
+	row = int((tile_num - 1)*(1/4))
+	if row%2 == 1:
+		col = evens[((tile_num-1)%4)]
+	elif row%2 == 0:
+		col = odds[((tile_num-1)%4)]
+
+	return row, col
+
+
+
 class Player:
-	def __init__(self, color):
-		self.color = color
+	def __init__(self, player_color):
+		self.player_color = player_color
 
-	def _valid_piece(self):
-		same_color = piece.color == self.color
-		movable = piece.can_move()
-		if same_color and moveable:
-			return True
-		return False
-
-
-	def move(self, piece):
-		if self._valid_piece(piece):
+	def select_tile(self, tile_num, board):
+		i, j = tile_num_to_index(tile_num)
+		if not board.Board[i][j]._valid_tile(self.player_color):
 			return
+		print(board.Board[i][j])
+
+	def move(self, pce_on_tile, destination):
+		if pce_on_tile._valid_piece(self.player_color):
+			return 
 		return
 
 
@@ -47,7 +59,7 @@ class Board:
 			for j in range(BOARD_SIZE):
 				if Board[i][j].piece and i < 3:
 					Board[i][j].piece = Piece('r')
-				if Board[i][j].color == 1:
+				if Board[i][j].tile_color == 1:
 					Board[i][j].number = int((BOARD_SIZE*(i) + j)/2) + 1
 
 	def __repr__(self):
@@ -58,14 +70,27 @@ class Board:
 
 
 class Tile:
-	def __init__(self, color, piece):
-		self.color = color
+	def __init__(self, tile_color, piece):
+		self.tile_color = tile_color
 		self.piece = piece
 		self.number = None
 
 	def __repr__(self):
 		string = f"({str(self.number)}, {self.piece})"
 		return string
+
+	# used to compare tiles in can_move?
+	def __eq__(self, other):
+		return self.color == other.color and self.number == other.number
+
+	def _valid_tile(self, player_color):
+		piece_available = self.piece
+		same_color = self.piece.color == player_color
+		movable = self.piece.can_move()
+		if piece_available and same_color and movable:
+			return True
+		return False
+
 
 
 class Piece:
@@ -78,9 +103,22 @@ class Piece:
 			return self.color + 'k'
 		return self.color
 
-	def movable(self):
+	def can_move(self):
+		if self.king:
+			pass
+		else:
+			pass
+		return True
+	
+	def find_piece(self):
 		pass
 
 
-main_board = Board()
-print(main_board)
+mainboard = Board()
+print(mainboard)
+
+print()
+ 
+player = Player('w')
+player.select_tile(5, mainboard) # does not print anything, piece doesn't belong to player color
+player.select_tile(32, mainboard) # prints the value at board index [2, 3] which contains a red piece at tile num 10
