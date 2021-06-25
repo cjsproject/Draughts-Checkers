@@ -1,0 +1,38 @@
+Alpha-beta minimax algorithm:
+
+inputs:
+  state, current state being explored
+  alpha, the best score for max along the path to state
+  beta, the best score for min along the path to state
+
+return: minimax value of state
+
+def maxv (state, alpha, beta):
+ if cutoff(state): 
+    return evalFun(state)
+ for s in successors(state):
+    val = minv(s, alpha, beta)
+    alpha = max(alpha,val)
+    if alpha >= beta: return beta
+ return alpha
+
+def minv (state, alpha, beta):
+ if cutoff(state): 
+    return evalFun(state)
+ for s in successors(state):
+    val = maxv(s, alpha, beta)
+    beta = min(beta,val)
+    if beta <=  alpha: return alpha
+ return beta
+
+def playGame(start):
+   result = maxv(start,-infinity,+infinity) 
+   while not gameOver(result):
+      # The system makes the move it just discovered;
+      # Gets his opponent's move;
+      # Then calls maxv again.
+      #
+      # In the actual implementation, maxv and minv need to return
+      # both the minimax value and the state to move to. See the
+      # adversarial search code on the resources page for the full
+      # implementation.

@@ -1,0 +1,23 @@
+Subject: How to use Python 3 on the department servers.
+
+--------
+
+0. Connect to a server.
+
+1. Open your .bashrc.custom.
+
+	-bash-3.2$ vi ~/.bashrc.custom
+
+
+2. Find the line setting PYTHONPATH and make sure it specifies the correct location.
+
+	export PYTHONPATH=/usr/local/lib/python3.2:.
+
+
+3. Delete the line setting PYTHONHOME, if your .bashrc.custom has it.
+
+
+4. You can set an alias name for your convenience.
+
+	alias python='python3.2'
+

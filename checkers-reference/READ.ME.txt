@@ -1,0 +1,9 @@
+
+checkers.py --  the checkers playing program.
+
+driver.py -- a program to play two checkers programs against each other.
+
+
+* for Python 2 users
+  checkers_P2.py --  the checkers playing program (in Python 2). 
+  driver_P2.py -- a program to play two checkers programs against each other (in Python 2).
