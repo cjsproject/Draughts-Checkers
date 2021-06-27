@@ -12,6 +12,7 @@ todo:
 """
 
 BOARD_SIZE = 8
+EDGE_PIECES = [5, 13, 20, 21, 29, 4, 12, 28]
 
 def tile_num_to_index(tile_num):
 	# returns the board's index of the green tile with labeled tile_num
@@ -37,6 +38,8 @@ def parse_move(move_string):
 	
 	return int(tile1), int(tile2), jump
 
+def check_left(tile_num, piece_color):
+
 
 class Player:
 	def __init__(self, player_color):
@@ -56,17 +59,35 @@ class Player:
 		# checks to
 		#self.select_tile(current_tile, mainboard)
 		print()
+		# before doing this in practical terms, first check:
+		# does the current tile's piece belong to player, and is the next tile an empty diagonal (a valid move)
+		# maybe write a possible_moves() method which takes a piece,
+		# returns an array of tile numbers associated with valid next_tile moves
+		# if nxt_tile is in the array, execute the move, otherwise, throw back to user
 		i, j = tile_num_to_index(current_tile)
+		# grab possible moves
+		possible_moves = mainboard.Board[i][j].piece.possible_moves()
+
+		if nxt_tile in possible_moves:
+			pass
+
+		"""		
 		i1, j1 = tile_num_to_index(nxt_tile)
 		mainboard.Board[i1][j1].piece = mainboard.Board[i][j].piece
 		mainboard.Board[i][j].piece = False
 		print(mainboard)
-
+		"""
 
 class Board:
 	def __init__(self):
 		self.Board = None
 		self._createBoard()
+
+	def __repr__(self):
+		string = ''
+		for i in self.Board:
+			string += str(i) + '\n'
+		return string
 
 	def _createBoard(self):
 		# setting up board
@@ -75,19 +96,17 @@ class Board:
 		# Piece() objects have color info: r/w and king info
 		self.Board = [[Tile((i+(j%2))%2, Piece('w')) if (j < 3 and (i+(j%2))%2) or (j > 4 and (i+(j%2))%2) else Tile((i+(j%2))%2, False) for i in range(BOARD_SIZE)] for j in range(BOARD_SIZE)]
 
+		# initialize the red pieces, and all numbers 1-32
 		Board = self.Board
 		for i in range(BOARD_SIZE):
 			for j in range(BOARD_SIZE):
 				if Board[i][j].piece and i < 3:
 					Board[i][j].piece = Piece('r')
 				if Board[i][j].tile_color == 1:
+					if Board[i][j].piece:
+						Board[i][j].piece.num = int((BOARD_SIZE*(i) + j)/2) + 1
 					Board[i][j].number = int((BOARD_SIZE*(i) + j)/2) + 1
 
-	def __repr__(self):
-		string = ''
-		for i in self.Board:
-			string += str(i) + '\n'
-		return string
 
 
 class Tile:
@@ -109,19 +128,9 @@ class Tile:
 
 	def validate_tile(self, player_color):
 		# validates the tile contains a piece which belongs to the player
-		#piece_available = self.piece
-		piece_on_tile = bool(self.piece)
-		if piece_on_tile:
-			player_owns_piece = (self.piece.color == player_color)
-
-		#movable = self.piece.can_move() or not self.piece
-		#if piece_available and same_color and movable:
-		#	return True
-		#return False
-		if self.number and piece_on_tile:
-			return True
-		return False
-
+		# check that the tile has a piece
+		# check that the piece has the same color as the player
+		# if no piece, then the tile cannot be selected
 
 
 
@@ -129,19 +138,25 @@ class Piece:
 	def __init__(self, color):
 		self.color = color
 		self.king = False
+		self.num = None
 
 	def __repr__(self):
 		if self.king:
 			return self.color + 'k'
 		return self.color
 
-	def can_move(self):
+	def possible_moves(self):
+		move_set = self._count_moves
+		return move_set
+
+	def _count_moves(self):
+		move_set = []
 		if self.king:
 			pass
 		else:
 			pass
-		return True
-	
+
+
 	def find_piece(self):
 		pass
 
@@ -155,4 +170,4 @@ player = Player('r')
 #player.select_tile(5, mainboard) # does not print anything, piece doesn't belong to player color
 #player.select_tile(32, mainboard) # prints the value at board index [2, 3] which contains a red piece at tile num 10
 
-player.move('11-15')
+#player.move('11-15')
